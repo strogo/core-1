@@ -1,5 +1,11 @@
 $(document).ready(function() {
 
+	var lockBreakersGroupsList = $('#lock_breakers_groups_list');
+	OC.Settings.setupGroupsSelect(lockBreakersGroupsList);
+	lockBreakersGroupsList.change(function(ev) {
+		OC.AppConfig.setValue('core', 'lock-breaker-groups', JSON.stringify(ev.val || []));
+	});
+
 	$('#persistentlocking input').change(function () {
 		var currentInput = $(this);
 		var name = currentInput.attr('name');

@@ -157,7 +157,7 @@ class Server {
 
 		$this->server->addPlugin(new ExceptionLoggerPlugin('webdav', $logger));
 		$this->server->addPlugin(new \Sabre\DAV\Sync\Plugin());
-		$this->server->addPlugin(new LockPlugin());
+		$this->server->addPlugin(new LockPlugin(\OC::$server->getConfig(), \OC::$server->getGroupManager()));
 
 		$fileLocksBackend = new FileLocksBackend($this->server->tree, false, OC::$server->getTimeFactory());
 		$this->server->addPlugin(new \OCA\DAV\Connector\Sabre\PublicDavLocksPlugin($fileLocksBackend, function ($uri) {
