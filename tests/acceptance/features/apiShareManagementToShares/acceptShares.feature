@@ -454,3 +454,27 @@ Feature: accept/decline shares coming from internal users
     And user "David" should not see the following elements
       | /PARENT%20(2)/ |
     And the content of file "/Shares/PARENT/abc.txt" for user "David" should be "uploaded content"
+
+  @issue-ocis-1123
+  Scenario Outline: deleting a share accepted file and folder
+    Given user "Alice" has shared folder "/PARENT" with user "Brian"
+    And user "Brian" has accepted share "/PARENT" offered by user "Alice"
+    When user "Brian" deletes file "/Shares/PARENT" using the WebDAV API
+    Then the HTTP status code should be "204"
+    And the sharing API should report to user "Brian" that these shares are in the declined state
+      | path                 |
+      | /PARENT              |
+    Examples:
+      | ocs_api_version | ocs_status_code |
+      | 1               | 100             |
+      | 2               | 200             |
+
+  @issue-ocis-765
+  Scenario: shares exist after restoring already shared file to a previous version
+    And user "Alice" has uploaded file with content "Test Content." to "/toShareFile.txt"
+    And user "Alice" has uploaded file with content "Content Test Updated." to "/toShareFile.txt"
+    And user "Alice" has shared file "/toShareFile.txt" with user "Brian"
+    And user "Brian" has accepted share "/toShareFile.txt" offered by user "Alice"
+    When user "Alice" restores version index "1" of file "/toShareFile.txt" using the WebDAV API
+    Then the content of file "/toShareFile.txt" for user "Alice" should be "Test Content."
+    And the content of file "/Shares/toShareFile.txt" for user "Brian" should be "Test Content."

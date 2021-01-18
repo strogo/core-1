@@ -260,25 +260,13 @@ class TrashbinContext implements Context {
 		foreach ($elementRows as $expectedElement) {
 			$found = false;
 			$expectedPath = $expectedElement['path'];
-			$expectedMtime = $expectedElement['mtime'] === "deleted_mtime" ? $this->featureContext->getLastUploadDeleteTime() : $expectedElement['mtime'];
-			
-			if (isset($expectedElement['mtime'])) {
-				foreach ($files as $file) {
-					if (\ltrim($expectedPath, "/") === \ltrim($file['original-location'], "/") && \ltrim($expectedMtime, "/") === \ltrim($file['mtime'], "/")) {
-						$found = true;
-						break;
-					}
+			foreach ($files as $file) {
+				if (\ltrim($expectedPath, "/") === \ltrim($file['original-location'], "/")) {
+					$found = true;
+					break;
 				}
-				Assert::assertTrue($found, "$expectedPath with mtime $expectedMtime expected to be listed in response but not found");
-			} else {
-				foreach ($files as $file) {
-					if (\ltrim($expectedPath, "/") === \ltrim($file['original-location'], "/")) {
-						$found = true;
-						break;
-					}
-				}
-				Assert::assertTrue($found, "$expectedPath expected to be listed in response but not found");
 			}
+			Assert::assertTrue($found, "$expectedPath expected to be listed in response but not found");
 		}
 	}
 
@@ -731,5 +719,37 @@ class TrashbinContext implements Context {
 		// Get all the contexts you need in this context
 		$this->featureContext = $environment->getContext('FeatureContext');
 		$this->occContext = $environment->getContext('OccContext');
+	}
+
+	/**
+	 * @Then /^the deleted (?:file|folder) "([^"]*)" should have the correct deletion mtime in the response$/
+	 *
+	 * @param string $resource file or folder in trashbin
+	 *
+	 * @return void
+	 */
+	public function theDeletedFileFolderShouldHaveCorrectDeletionMtimeInTheResponse($resource) {
+		$files = $this->getTrashbinContentFromResponseXml(
+			$this->featureContext->getResponseXmlObject()
+		);
+		
+		$found = false;
+		$expectedMtime = $this->featureContext->getLastUploadDeleteTime();
+		$responseMtime = '';
+			
+		foreach ($files as $file) {
+			if (\ltrim($resource, "/") === \ltrim($file['original-location'], "/")) {
+				$responseMtime = $file['mtime'];
+				$mtime_difference = \abs((int)\trim($expectedMtime) - (int)\trim($responseMtime));
+
+				if ($mtime_difference <= 2) {
+					$found = true;
+					break;
+				}
+			}
+		}
+		Assert::assertTrue(
+			$found, "$resource expected to be listed in response with mtime '$expectedMtime' but found '$responseMtime'"
+		);
 	}
 }

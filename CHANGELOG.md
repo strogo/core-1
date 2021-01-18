@@ -12,18 +12,29 @@ Summary
 * Bugfix - Don't redirect if the browser ask for a .properties file: [#38181](https://github.com/owncloud/core/pull/38181)
 * Bugfix - Show the share list even if some shares point to unavailable storages: [#38190](https://github.com/owncloud/core/pull/38190)
 * Bugfix - Fix a regression with theming of settings menu icons: [#38246](https://github.com/owncloud/core/pull/38246)
+* Bugfix - Determine unencrypted block size after begin operation: [#38249](https://github.com/owncloud/core/pull/38249)
+* Bugfix - Fix the position of the user afterLogin-event: [#38289](https://github.com/owncloud/core/pull/38289)
+* Bugfix - Fix file_target in response when creating a public link share: [#38291](https://github.com/owncloud/core/issues/38291)
 * Change - Update Symfony components to 4.4.17: [#38163](https://github.com/owncloud/core/pull/38163)
-* Change - Update laminas/laminas-servicemanager (3.4.1 => 3.5.1): [#38188](https://github.com/owncloud/core/pull/38188)
+* Change - Update laminas/laminas-servicemanager (3.4.1 => 3.5.2): [#38306](https://github.com/owncloud/core/pull/38306)
 * Change - Update nikic/php-parser (4.10.2 => 4.10.4): [#38191](https://github.com/owncloud/core/pull/38191)
 * Change - Update swiftmailer/swiftmailer (v6.2.3 => v6.2.4): [#38198](https://github.com/owncloud/core/pull/38198)
 * Change - Rename phoenix to web: [#38199](https://github.com/owncloud/core/pull/38199)
 * Change - Update Symfony components to 4.4.18: [#38234](https://github.com/owncloud/core/pull/38234)
 * Change - Update phpseclib/phpseclib (2.0.29 => 2.0.30): [#38244](https://github.com/owncloud/core/pull/38244)
+* Change - Update egulias/email-validator (2.1.24 => 2.1.25): [#38255](https://github.com/owncloud/core/pull/38255)
+* Change - Update laminas/laminas-validator (2.13.4 => 2.13.5): [#38275](https://github.com/owncloud/core/pull/38275)
+* Change - Update patchwork/utf8 (v1.3.2 => v1.3.3): [#38275](https://github.com/owncloud/core/pull/38275)
+* Change - Update symfony/polyfill (1.20.0 => 1.22.0): [#38275](https://github.com/owncloud/core/pull/38275)
+* Change - Update sabre/dav (4.1.3 => 4.1.4): [#380285](https://github.com/owncloud/core/pull/380285)
+* Change - Remove package patchwork/utf8: [#38286](https://github.com/owncloud/core/pull/38286)
+* Change - Update swiftmailer/swiftmailer (v6.2.4 => v6.2.5): [#38306](https://github.com/owncloud/core/pull/38306)
 * Enhancement - Context menu for files in case multiple actions apply: [#38132](https://github.com/owncloud/core/pull/38132)
 * Enhancement - New external storage: SMB Collaborative (shared file IDs)): [#38151](https://github.com/owncloud/core/pull/38151)
 * Enhancement - Allow mounting a subfolder from Google Drive: [#38161](https://github.com/owncloud/core/pull/38161)
 * Enhancement - Make the right scrollbar more visible on the UI: [#38183](https://github.com/owncloud/core/pull/38183)
 * Enhancement - Improve file list tag management: [#38197](https://github.com/owncloud/core/pull/38197)
+* Enhancement - Improve the UX in the external storage settings page: [#38288](https://github.com/owncloud/core/pull/38288)
 
 Details
 -------
@@ -64,6 +75,31 @@ Details
 
    https://github.com/owncloud/core/pull/38246
 
+* Bugfix - Determine unencrypted block size after begin operation: [#38249](https://github.com/owncloud/core/pull/38249)
+
+   Unencrypted block size of encrypted file can change with different encoding types.
+   Unencrypted block size determination has been moved after begin operation in stream opening.
+   In this way, EncryptionModule can decide block size after reading the header of the file.
+
+   https://github.com/owncloud/core/pull/38249
+
+* Bugfix - Fix the position of the user afterLogin-event: [#38289](https://github.com/owncloud/core/pull/38289)
+
+   Move the emitting event "user.afterlogin" in the method loginWithPassword. Previously it
+   was placed after the prepareUserLogin-call which caused some issues with the encryption app
+   using Symfony event listeners.
+
+   https://github.com/owncloud/core/pull/38289
+
+* Bugfix - Fix file_target in response when creating a public link share: [#38291](https://github.com/owncloud/core/issues/38291)
+
+   The value of share_folder (if set in config.php) was being prepended to the file_target field
+   in the response to a request to create a public link share. share_folder is not relevant to
+   public link shares. It is no longer prepended.
+
+   https://github.com/owncloud/core/issues/38291
+   https://github.com/owncloud/core/pull/38295
+
 * Change - Update Symfony components to 4.4.17: [#38163](https://github.com/owncloud/core/pull/38163)
 
    The following Symfony components have been updated to version 4.4.17 - console -
@@ -72,8 +108,9 @@ Details
    https://github.com/owncloud/core/pull/38163
    https://symfony.com/blog/symfony-4-4-17-released
 
-* Change - Update laminas/laminas-servicemanager (3.4.1 => 3.5.1): [#38188](https://github.com/owncloud/core/pull/38188)
+* Change - Update laminas/laminas-servicemanager (3.4.1 => 3.5.2): [#38306](https://github.com/owncloud/core/pull/38306)
 
+   https://github.com/owncloud/core/pull/38306
    https://github.com/owncloud/core/pull/38188
 
 * Change - Update nikic/php-parser (4.10.2 => 4.10.4): [#38191](https://github.com/owncloud/core/pull/38191)
@@ -106,6 +143,40 @@ Details
 * Change - Update phpseclib/phpseclib (2.0.29 => 2.0.30): [#38244](https://github.com/owncloud/core/pull/38244)
 
    https://github.com/owncloud/core/pull/38244
+
+* Change - Update egulias/email-validator (2.1.24 => 2.1.25): [#38255](https://github.com/owncloud/core/pull/38255)
+
+   https://github.com/owncloud/core/pull/38255
+
+* Change - Update laminas/laminas-validator (2.13.4 => 2.13.5): [#38275](https://github.com/owncloud/core/pull/38275)
+
+   https://github.com/owncloud/core/pull/38275
+
+* Change - Update patchwork/utf8 (v1.3.2 => v1.3.3): [#38275](https://github.com/owncloud/core/pull/38275)
+
+   https://github.com/owncloud/core/pull/38275
+
+* Change - Update symfony/polyfill (1.20.0 => 1.22.0): [#38275](https://github.com/owncloud/core/pull/38275)
+
+   The following symfony/polyfill components have been updated to version 1.22.0:
+
+   Symfony/polyfill-ctype symfony/polyfill-iconv symfony/polyfill-intl-idn
+   symfony/polyfill-intl-normalizer symfony/polyfill-mbstring symfony/polyfill-php72
+   symfony/polyfill-php73 symfony/polyfill-php80
+
+   https://github.com/owncloud/core/pull/38275
+
+* Change - Update sabre/dav (4.1.3 => 4.1.4): [#380285](https://github.com/owncloud/core/pull/380285)
+
+   https://github.com/owncloud/core/pull/380285
+
+* Change - Remove package patchwork/utf8: [#38286](https://github.com/owncloud/core/pull/38286)
+
+   https://github.com/owncloud/core/pull/38286
+
+* Change - Update swiftmailer/swiftmailer (v6.2.4 => v6.2.5): [#38306](https://github.com/owncloud/core/pull/38306)
+
+   https://github.com/owncloud/core/pull/38306
 
 * Enhancement - Context menu for files in case multiple actions apply: [#38132](https://github.com/owncloud/core/pull/38132)
 
@@ -161,6 +232,14 @@ Details
    will appear in the tag list immediately
 
    https://github.com/owncloud/core/pull/38197
+
+* Enhancement - Improve the UX in the external storage settings page: [#38288](https://github.com/owncloud/core/pull/38288)
+
+   When a user adds or edits an external storage, the user will see a notification if the storage has
+   been added or an error occured. When a user hovers over the status indicator, the user will see a
+   pointer cursor, this clarifies that a click will result in a config (re-)check.
+
+   https://github.com/owncloud/core/pull/38288
 
 Changelog for ownCloud Core [10.6.0] (2020-11-25)
 =======================================
